@@ -24,17 +24,16 @@ def density_view():
     if request.method == 'POST':
         if request.is_json:
             content = request.json
-            if ('x' in content) and ('y' in content) and ('in' in content) and ('out' in content):
+            if ('x' in content) and ('y' in content) and ('count' in content):
                 x = content['x']
                 y = content['y']
-                inwards = content['in']
-                outwards = content['out']
+                count = content['count']
                 Camera = Query()
                 cam = density_table.get((Camera.x == x) & (Camera.y == y))
                 if cam is None:
-                    density_table.insert({'x': x, 'y': y, 'count': inwards - outwards})
+                    density_table.insert({'x': x, 'y': y, 'count': count})
                 else:
-                    density_table.update(add('count', (inwards - outwards)), (Camera.x == x) & (Camera.y == y))
+                    density_table.update({'count': count}, (Camera.x == x) & (Camera.y == y))
                 
                 return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
         abort(400) 
