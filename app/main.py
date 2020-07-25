@@ -41,13 +41,19 @@ def density_view():
     else:
         return json.dumps(density_table.all()), 200, {'ContentType':'application/json'} 
 
+@app.route("/cleardensity", methods=('POST'))
+def clear_density():
+    density_table.truncate()
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+
 @app.route("/mask", methods=('GET', 'POST'))
 def mask_view():
     if request.method == 'POST':
         if request.is_json:
             content = request.json
-            if ('mask' in content):
+            if ('mask' in content) and ('nomask' in content):
                 mask_val = content['mask']
+                no_mask_val = content['nomask']
                 
                 Mask = Query()
                 mask = mask_table.get(Mask.type == 'with')
@@ -57,13 +63,16 @@ def mask_view():
                 if no_mask is None:
                     mask_table.insert({'type': 'without', 'count': 0})
 
-                if mask_val:
-                    mask_table.update(add('count', 1), Mask.type == 'with')
-                else:
-                    mask_table.update(add('count', 1), Mask.type == 'without')
+                mask_table.update(add('count', mask_val), Mask.type == 'with')
+                mask_table.update(add('count', no_mask_val), Mask.type == 'without')
                 
                 return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
         
         abort(400) 
     else:
         return json.dumps(mask_table.all()), 200, {'ContentType':'application/json'}
+
+@app.route("/clearmask", methods=('POST'))
+def clear_mask():
+    mask_table.truncate()
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
