@@ -30,11 +30,11 @@ def density_view():
                 inwards = content['in']
                 outwards = content['out']
                 Camera = Query()
-                cam = density_table.get(Camera.x == x and Camera.y == y)
+                cam = density_table.get((Camera.x == x) & (Camera.y == y))
                 if cam is None:
                     density_table.insert({'x': x, 'y': y, 'count': inwards - outwards})
                 else:
-                    density_table.update(add('count', (inwards - outwards)), Camera.x == x and Camera.y == y)
+                    density_table.update(add('count', (inwards - outwards)), (Camera.x == x) & (Camera.y == y))
                 
                 return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
         abort(400) 
