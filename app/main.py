@@ -19,7 +19,7 @@ mask_table = db.table('mask_table')
 def home_view(): 
     return "<h1>Welcome to A-Teams</h1><h5>API server for Edge Devices</h5>"
 
-@app.route("/density", methods=('GET', 'POST'))
+@app.route("/density", methods=['GET', 'POST'])
 def density_view():
     if request.method == 'POST':
         if request.is_json:
@@ -41,12 +41,12 @@ def density_view():
     else:
         return json.dumps(density_table.all()), 200, {'ContentType':'application/json'} 
 
-@app.route("/cleardensity", methods=('POST'))
+@app.route("/cleardensity", methods=['POST'])
 def clear_density():
     density_table.truncate()
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
-@app.route("/mask", methods=('GET', 'POST'))
+@app.route("/mask", methods=['GET', 'POST'])
 def mask_view():
     if request.method == 'POST':
         if request.is_json:
@@ -72,7 +72,7 @@ def mask_view():
     else:
         return json.dumps(mask_table.all()), 200, {'ContentType':'application/json'}
 
-@app.route("/clearmask", methods=('POST'))
+@app.route("/clearmask", methods=['POST'])
 def clear_mask():
     mask_table.truncate()
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
