@@ -83,3 +83,4 @@ def clear_mask():
 def run_model():
     thr = threading.Thread(target=main, args=(), kwargs={})
     thr.start() # Will run "foo"
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
