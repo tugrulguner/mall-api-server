@@ -50,20 +50,22 @@ def mask_view():
     if request.method == 'POST':
         if request.is_json:
             content = request.json
-            if ('mask' in content) and ('nomask' in content):
+            if ('x' in content) and ('y' in content) and ('mask' in content) and ('nomask' in content):
                 mask_val = content['mask']
                 no_mask_val = content['nomask']
+                x = content['x']
+                y = content['y']
                 
                 Mask = Query()
-                mask = mask_table.get(Mask.type == 'with')
-                no_mask = mask_table.get(Mask.type == 'without')
-                if mask is None:
-                    mask_table.insert({'type': 'with', 'count': 0})
-                if no_mask is None:
-                    mask_table.insert({'type': 'without', 'count': 0})
+                mask = mask_table.get((Mask.x == x) & (Mask.y == y))
 
-                mask_table.update(add('count', mask_val), Mask.type == 'with')
-                mask_table.update(add('count', no_mask_val), Mask.type == 'without')
+                if mask is None:
+                    mask_table.insert({'x': x, 'y': y, 'mask': mask_val, 'nomask': no_mask_val})
+                else:
+                    mask_table.update({'mask': mask_val, 'nomask': no_mask_val}, (Mask.x == x) & (Mask.y == y))
+
+                # mask_table.update(add('count', mask_val), Mask.type == 'with')
+                # mask_table.update(add('count', no_mask_val), Mask.type == 'without')
                 
                 return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
         
