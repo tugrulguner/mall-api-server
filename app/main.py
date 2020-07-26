@@ -62,10 +62,9 @@ def mask_view():
                 if mask is None:
                     mask_table.insert({'x': x, 'y': y, 'mask': mask_val, 'nomask': no_mask_val})
                 else:
-                    mask_table.update({'mask': mask_val, 'nomask': no_mask_val}, (Mask.x == x) & (Mask.y == y))
-
-                # mask_table.update(add('count', mask_val), Mask.type == 'with')
-                # mask_table.update(add('count', no_mask_val), Mask.type == 'without')
+                    # mask_table.update({'mask': mask_val, 'nomask': no_mask_val}, (Mask.x == x) & (Mask.y == y))
+                    mask_table.update(add('mask', mask_val), (Mask.x == x) & (Mask.y == y))
+                    mask_table.update(add('nomask', no_mask_val), (Mask.x == x) & (Mask.y == y))
                 
                 return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
         
