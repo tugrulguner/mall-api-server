@@ -9,6 +9,8 @@ from flask import Flask, request, abort
 from tinydb import TinyDB, Query
 from tinydb.operations import delete, increment, decrement, add, subtract, set
 import json
+import threading
+from app.mainscript import main
   
 app = Flask(__name__) 
 db = TinyDB('db.json')
@@ -76,3 +78,8 @@ def mask_view():
 def clear_mask():
     mask_table.truncate()
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+
+@approute("/runmodel", methods=['GET'])
+def run_model():
+    thr = threading.Thread(target=main, args=(), kwargs={})
+    thr.start() # Will run "foo"
