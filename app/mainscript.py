@@ -63,7 +63,7 @@ def main():
   urlden = 'https://a-team-mall-api.herokuapp.com/density'
   urlmask = 'https://a-team-mall-api.herokuapp.com/mask'
  
-  t_end = time.time() + 60 * 2
+  t_end = time.time() + 60 * 30
 
   while time.time() < t_end:
     # Here I provided a link from https://www.insecam.org/, which is a good spot from Colorado, USA
@@ -107,7 +107,6 @@ def main():
     k = cv2.waitKey(30) & 0xff
     if k==27:
       break
-    time.sleep(1)
     # Release the VideoCapture object
   cap.release()
   cv2.destroyAllWindows()
