@@ -16,6 +16,7 @@ app = Flask(__name__)
 db = TinyDB('db.json')
 density_table = db.table('density_table')
 mask_table = db.table('mask_table')
+violation_table = db.table('violation_table')
   
 @app.route("/") 
 def home_view(): 
@@ -79,8 +80,28 @@ def clear_mask():
     mask_table.truncate()
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
-# @approute("/runmodel", methods=['GET'])
-# def run_model():
-#     thr = threading.Thread(target=main, args=(), kwargs={})
-#     thr.start() # Will run "foo"
-#     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+@app.route("/violations", methods=['GET', 'POST'])
+def violations_view():
+    if request.method == 'POST':
+        if request.is_json:
+            content = request.json
+            if ('x' in content) and ('y' in content) and ('count' in content):
+                x = content['x']
+                y = content['y']
+                count = content['count']
+                Camera = Query()
+                cam = violation_table.get((Camera.x == x) & (Camera.y == y))
+                if cam is None:
+                    violation_table.insert({'x': x, 'y': y, 'count': count})
+                else:
+                    violation_table.update({'count': count}, (Camera.x == x) & (Camera.y == y))
+                
+                return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+        abort(400) 
+    else:
+        return json.dumps(violation_table.all()), 200, {'ContentType':'application/json'} 
+
+@app.route("/clearviolations", methods=['POST'])
+def clear_violations():
+    violation_table.truncate()
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
